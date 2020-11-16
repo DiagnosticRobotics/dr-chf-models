@@ -18,7 +18,7 @@ we were not able to provide the code for the data processing stage and feature e
 The creation of all used models including logistic regression, xgboost and deep learning models can be found in the "model_creation.py" file.
 
 The sequential deep learning models including CNN and LSTM architectures with the attention mechanism can 
-be found under the "deep" folder. The sequential deep learning models implement the architecture described in:
+be found under the "deep" folder. The sequential deep learning models implement the architecture described in the following figure:
 
 <img src="https://i.ibb.co/qN2QqRj/image-3.png" width="600">
 
