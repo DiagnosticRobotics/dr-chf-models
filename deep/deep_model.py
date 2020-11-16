@@ -11,7 +11,7 @@ class DeepModel(DeepBaseModel):
                  dropout_rate = 0.4,
                  epochs = 50,
                  initial_learning_rate = 0.001,
-                 embedding_size = 100,
+                 vector_size = 300,
                  use_gpu= True,
                  layers_dim = [64, 32]):
         '''
@@ -25,7 +25,7 @@ class DeepModel(DeepBaseModel):
             dropout_rate: float. dropout layer rate
             epochs: int. number of epochs.
             initial_learning_rate:  float. initial learning model for the deep model.
-            embedding_size: int. embedding vector size.
+            vector_size: int. embedding vector size.
             use_gpu: boolean [True, False]
             use_attention: boolean [True, False] to use attention layer on the sequence.
             layers_dim: list. list of fully connected layers dimensions.
@@ -38,7 +38,7 @@ class DeepModel(DeepBaseModel):
                          dropout_rate,
                          epochs,
                          initial_learning_rate,
-                         embedding_size,
+                         vector_size,
                          use_gpu)
         self.layers_dim = layers_dim
         self.config_gpu()
@@ -46,7 +46,7 @@ class DeepModel(DeepBaseModel):
     def get_model(self):
         # all features to fc network
         output_dimensions = self.layers_dim + [1]
-        features_input = Input(shape = (self.embedding_size,))
+        features_input = Input(shape = (self.vector_size,))
         model = self._add_layers(features_input, output_dimensions)
         model = Model(inputs = features_input, outputs = model, name = 'Final_output')
         return model

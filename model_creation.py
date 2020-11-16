@@ -3,11 +3,6 @@ from deep.deep_model import DeepModel
 from deep.lstm_model import LstmModel
 from sklearn.linear_model import LogisticRegression
 from xgboost import XGBClassifier
-import warnings
-from sklearn.exceptions import DataConversionWarning
-
-warnings.filterwarnings(action='ignore', category=DataConversionWarning)
-
 
 def return_clf(model_type):
     """ return clf for a given parameters """

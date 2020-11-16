@@ -13,7 +13,7 @@ class LstmModel(DeepSequentialModel):
                  dropout_rate = 0.4,
                  epochs = 50,
                  initial_learning_rate = 0.001,
-                 embedding_size = 100,
+                 vector_size = 300,
                  use_gpu = True,
                  use_attention = True,
                  layers_dim = [64,32],
@@ -30,7 +30,7 @@ class LstmModel(DeepSequentialModel):
             dropout_rate: float. dropout layer rate
             epochs: int. number of epochs.
             initial_learning_rate:  float. initial learning model for the deep model.
-            embedding_size: int. embedding vector size.
+            vector_size: int. embedding vector size.
             use_gpu: boolean [True, False]
             use_attention: boolean [True, False] to use attention layer on the sequence.
             layers_dim: list. list of fully connected layers dimensions.
@@ -45,7 +45,7 @@ class LstmModel(DeepSequentialModel):
                          dropout_rate,
                          epochs,
                          initial_learning_rate,
-                         embedding_size,
+                         vector_size,
                          use_gpu,
                          use_attention, layers_dim)
         self.lstm_layers = lstm_layers
@@ -53,7 +53,7 @@ class LstmModel(DeepSequentialModel):
 
     def build_sequential_network(self):
         # input shape sequence length X embedding size
-        codes_input = Input(shape = (self.T, self.embedding_size))
+        codes_input = Input(shape = (self.sequence_length, self.vector_size))
         fc_input = self._add_layers(codes_input, self.layers_dim, name = f'input')
         lstm_output = self._add_lstm_layers(fc_input, self.lstm_layers, self.bidirectional_lstm, self.use_attention,
                                             name = f'lstm_input')

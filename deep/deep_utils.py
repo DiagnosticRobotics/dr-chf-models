@@ -15,7 +15,7 @@ class DeepBaseModel:
                  dropout_rate = 0.4,
                  epochs = 50,
                  initial_learning_rate = 0.001,
-                 embedding_size = 100,
+                 vector_size = 300,
                  use_gpu= True):
         '''
 
@@ -28,7 +28,7 @@ class DeepBaseModel:
             dropout_rate: float. dropout layer rate
             epochs: int. number of epochs.
             initial_learning_rate:  float. initial learning model for the deep model.
-            embedding_size: int. embedding vector size.
+            vector_size: int. embedding vector size.
             use_gpu: boolean [True, False]
         '''
         self.model_name = model_name
@@ -38,7 +38,7 @@ class DeepBaseModel:
         self.batch_size =batch_size
         self.dropout_rate = dropout_rate
         self.epochs = epochs
-        self.embedding_size = embedding_size
+        self.vector_size = vector_size
         self.initial_learning_rate = initial_learning_rate
         self.use_gpu = use_gpu
         self.logdir = f'deep_logs/{model_name}'

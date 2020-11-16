@@ -13,7 +13,7 @@ class CnnModel(DeepSequentialModel):
                  dropout_rate = 0.4,
                  epochs = 50,
                  initial_learning_rate = 0.001,
-                 embedding_size = 100,
+                 vector_size = 300,
                  use_gpu = True,
                  use_attention = True,
                  layers_dim = [64, 32],
@@ -31,7 +31,7 @@ class CnnModel(DeepSequentialModel):
             dropout_rate: float. dropout layer rate
             epochs: int. number of epochs.
             initial_learning_rate:  float. initial learning model for the deep model.
-            embedding_size: int. embedding vector size.
+            vector_size: int. embedding vector size.
             use_gpu: boolean [True, False]
             use_attention: boolean [True, False] to use attention layer on the sequence.
             layers_dim: list. list of fully connected layers dimensions.
@@ -47,7 +47,7 @@ class CnnModel(DeepSequentialModel):
                          dropout_rate,
                          epochs,
                          initial_learning_rate,
-                         embedding_size,
+                         vector_size,
                          use_gpu,
                          use_attention, layers_dim)
         self.num_filters = num_filters
@@ -56,15 +56,15 @@ class CnnModel(DeepSequentialModel):
 
     def build_sequential_network(self):
         # input shape sequence length X embedding size
-        codes_input = Input(shape = (self.T, self.embedding_size))
-        reshape = Reshape((self.T, self.embedding_size, 1))(codes_input)
+        codes_input = Input(shape = (self.sequence_length, self.vector_size))
+        reshape = Reshape((self.sequence_length, self.vector_size, 1))(codes_input)
         # CNN layers
         layers = []
         for i, kernel_size in enumerate(self.kernels_size):
-            model = Conv2D(self.num_filters, kernel_size = (kernel_size, self.embedding_size),
+            model = Conv2D(self.num_filters, kernel_size = (kernel_size, self.vector_size),
                            activation = self.activation,
                            kernel_regularizer = regularizers.l2(), name = f'conv_{i}')(reshape)
-            layers.append(MaxPool2D(pool_size = (self.T - kernel_size + 1, 1), strides = (1, 1), padding = 'valid',
+            layers.append(MaxPool2D(pool_size = (self.sequence_length - kernel_size + 1, 1), strides = (1, 1), padding = 'valid',
                                     name = f'maxpooling_{i}')(model))
 
         # concat and flatten

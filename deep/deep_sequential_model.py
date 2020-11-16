@@ -23,11 +23,11 @@ class DeepSequentialModel(DeepBaseModel, TransformerMixin):
                  dropout_rate = 0.4,
                  epochs = 50,
                  initial_learning_rate = 0.001,
-                 embedding_size = 100,
+                 vector_size = 300,
                  use_gpu = True,
                  use_attention = True,
                  layers_dim = [64, 32],
-                 bucket_num = 1, time_granularity = 'month', last_years_number = 5):
+                 sequence_length = 60):
         """
 
         Args:
@@ -39,15 +39,13 @@ class DeepSequentialModel(DeepBaseModel, TransformerMixin):
             dropout_rate: float. dropout layer rate
             epochs: int. number of epochs.
             initial_learning_rate:  float. initial learning model for the deep model.
-            embedding_size: int. embedding vector size.
+            vector_size: int. embedding vector size.
             use_gpu: boolean [True, False]
             use_attention: boolean [True, False] to use attention layer on the sequence.
             layers_dim: list. list of fully connected layers dimensions.
-            bucket_num: int. number of time units in one bucket. bucket_num=1 and time_granularity='month' represent
-            a 1 month time data per element in the sequence.
-            time_granularity: str.  'month', 'week' or 'day'
-            last_years_number: int. number of years for the patient history. last 5 years with 1 month bucket will
-            create a sequence of length 60.
+            sequence_length: int. length of sequence input
+
+
         """
         super().__init__(model_name, activation, loss,
                          optimizer,
@@ -55,12 +53,10 @@ class DeepSequentialModel(DeepBaseModel, TransformerMixin):
                          dropout_rate,
                          epochs,
                          initial_learning_rate,
-                         embedding_size,
+                         vector_size,
                          use_gpu)
 
-        self.T = get_total_buckets_number(bucket_size = bucket_num,
-                                          granularity = time_granularity,
-                                          years_num = last_years_number)
+        self.sequence_length = sequence_length
         self.layers_dim = layers_dim
         self.use_attention = use_attention
         self.config_gpu()
@@ -122,10 +118,10 @@ class DataGenerator(keras.utils.Sequence):
 
     def __init__(self, x, model_config, y = None, sample_weights = None):
         super().__init__()
-        self.embedding_size = model_config.embedding_size
+        self.vector_size = model_config.vector_size
         self.input_params_list = []
         self.batch_size = model_config.batch_size
-        self.T = model_config.T
+        self.sequence_length = model_config.sequence_length
         self.ids = x.index.values
         self.y = y
         self.weights = sample_weights
@@ -159,7 +155,7 @@ class DataGenerator(keras.utils.Sequence):
     def __data_generation(self, list_ids):
         'Generates data containing batch_size samples'  # X : (n_samples, T,  vec_size)
         # Initialization
-        X = np.empty((len(list_ids), self.T, self.embedding_size))
+        X = np.empty((len(list_ids), self.sequence_length, self.vector_size))
         y = np.empty(len(list_ids), dtype = int)
         # Generate data
         for i, id in enumerate(list_ids):
