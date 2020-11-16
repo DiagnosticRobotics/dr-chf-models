@@ -3,7 +3,7 @@
 This repository is the source code for the architecture of 
 the machine learning models described in our paper.
 Of note, given the proprietary nature of this work though, 
-we were not able to provide the code for the data processing stage and feature enginerring.
+we were not able to provide the code for the data processing stage and feature engineering.
 
 
 ### Requirements
